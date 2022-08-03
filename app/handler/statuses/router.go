@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"yatter-backend-go/app/app"
+	"yatter-backend-go/app/handler/auth"
 
 	"github.com/go-chi/chi"
 )
@@ -18,8 +19,8 @@ func NewRouter(app *app.App) http.Handler {
 	r := chi.NewRouter()
 
 	h := &handler{app: app}
-	r.Post("/", h.Create)
-	r.Get("/{id}", h.Getstatus)
+	r.With(auth.Middleware(app)).Post("/", h.Create)
+	//r.Get("/{id}", h.Getstatus)
 
 	return r
 }
