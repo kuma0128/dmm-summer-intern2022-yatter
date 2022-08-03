@@ -19,8 +19,9 @@ func NewRouter(app *app.App) http.Handler {
 	r := chi.NewRouter()
 
 	h := &handler{app: app}
+	//r.With(middleware.Logger).Post("/", h.Create)
 	r.With(auth.Middleware(app)).Post("/", h.Create)
-	//r.With(auth.Middleware(app)).Get("/{id}", h.Getstatus)
+	//r.Get("/{id}", h.Getstatus)
 
 	return r
 }

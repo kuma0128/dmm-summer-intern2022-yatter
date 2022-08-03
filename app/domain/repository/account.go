@@ -14,6 +14,3 @@ type Account interface {
 	// Create user
 	CreateAccount(ctx context.Context, account *object.Account) error
 }
-
-type Status interface {
-}
