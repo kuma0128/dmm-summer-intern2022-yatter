@@ -3,6 +3,7 @@ package statuses
 import (
 	"encoding/json"
 	"net/http"
+	"yatter-backend-go/app/domain/object"
 	"yatter-backend-go/app/handler/httperror"
 )
 
@@ -20,7 +21,15 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//account := new(object.Account)
+	account := new(object.Account)
+	statusRepo := h.app.Dao.Account()
+	if err := statusRepo.CreateStatus(ctx, account); err != nil {
+		httperror.InternalServerError(w, err)
+	}
 
-	return
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(account); err != nil {
+		httperror.InternalServerError(w, err)
+		return
+	}
 }
