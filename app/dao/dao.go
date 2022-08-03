@@ -14,6 +14,9 @@ type (
 		// Get account repository
 		Account() repository.Account
 
+		// Get accout repository
+		Status() repository.Status
+
 		// Clear all data in DB
 		InitAll() error
 	}
