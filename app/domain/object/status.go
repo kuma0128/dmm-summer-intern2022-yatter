@@ -14,11 +14,8 @@ type (
 		// The username of the account
 		Username string `json:"username,omitempty"`
 
-		// URL to the header image
-		Header *string `json:"header,omitempty"`
-
 		// content
-		Content *string `json:"content,omitempty"`
+		Content string `json:"content,omitempty"`
 
 		// The time the account was created
 		CreateAt DateTime `json:"create_at,omitempty" db:"create_at"`

@@ -8,7 +8,7 @@ CREATE TABLE `account` (
   `note` text,
   `create_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `status` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -18,4 +18,4 @@ CREATE TABLE `status` (
   PRIMARY KEY (`id`),
   INDEX `idx_account_id` (`account_id`),
   CONSTRAINT `fk_status_account_id` FOREIGN KEY (`account_id`) REFERENCES  `account` (`id`)
-);
+)DEFAULT CHARSET=utf8mb4;
