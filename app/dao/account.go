@@ -22,6 +22,7 @@ type (
 func NewAccount(db *sqlx.DB) repository.Account {
 	return &account{db: db}
 }
+
 func (r *account) CreateAccount(ctx context.Context, account *object.Account) error {
 	//entity := new(object.Account)
 	_, err := r.db.ExecContext(ctx, "INSERT INTO account (username, password_hash) VALUES (?, ?)", account.Username, account.PasswordHash)
