@@ -2,6 +2,9 @@ package dao
 
 import (
 	"context"
+	"database/sql"
+	"errors"
+	"fmt"
 	"yatter-backend-go/app/domain/object"
 	"yatter-backend-go/app/domain/repository"
 
@@ -27,4 +30,19 @@ func (r *status) CreateStatus(ctx context.Context, status *object.Status, accoun
 		return err
 	}
 	return err
+}
+
+//get status : statusを取得
+func (r *status) FindByStatusID(ctx context.Context, s_id int64) (*object.Status, error) {
+	entity := new(object.Status)
+	err := r.db.QueryRowxContext(ctx, "SELECT * FROM status WHERE ID = ?", s_id).StructScan(entity)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, fmt.Errorf("%w", err)
+	}
+	return entity, nil
 }
