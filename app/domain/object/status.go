@@ -8,8 +8,11 @@ type (
 		// The status ID
 		S_id StatusID `json:"-" db:"id"`
 
-		// The internal ID of the account
-		U_id Account `json:"-" db:"account_id"`
+		// The accout id
+		AccountID AccountID `json:"-" db:"account_id"`
+
+		// The information of the account
+		Account Account `json:"-"`
 
 		// content
 		Content string `json:"content,omitempty" db:"content"`

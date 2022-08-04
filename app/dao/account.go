@@ -46,3 +46,17 @@ func (r *account) FindByUsername(ctx context.Context, username string) (*object.
 
 	return entity, nil
 }
+
+//get accout : s_idからaccountを取得
+func (r *status) FindByAccountID(ctx context.Context, uid int64) (*object.Account, error) {
+	entity := new(object.Account)
+	err := r.db.QueryRowxContext(ctx, "SELECT * FROM account WHERE id = ?", uid).StructScan(entity)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, fmt.Errorf("%w", err)
+	}
+	return entity, nil
+}
