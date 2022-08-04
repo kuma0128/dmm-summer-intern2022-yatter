@@ -2,13 +2,13 @@ package timelines
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 	"yatter-backend-go/app/domain/object"
 	"yatter-backend-go/app/handler/httperror"
 
-	"github.com/go-chi/chi"
 	"github.com/pkg/errors"
 )
 
@@ -16,7 +16,7 @@ import (
 func (h *handler) Gettimeline(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	max_id := chi.URLParam(r, "max_id")
+	max_id := r.FormValue("max_id")
 	if max_id == "" {
 		max_id = "0"
 	}
@@ -25,12 +25,13 @@ func (h *handler) Gettimeline(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	Max_id, err := strconv.ParseInt(max_id, 10, 64)
+	//fmt.Printf("%d\n", Max_id)
 	if err != nil {
 		httperror.BadRequest(w, err)
 		return
 	}
 
-	since_id := chi.URLParam(r, "since_id")
+	since_id := r.FormValue("since_id")
 	if since_id == "" {
 		since_id = "0"
 	}
@@ -50,11 +51,12 @@ func (h *handler) Gettimeline(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	limit := chi.URLParam(r, "limit")
+	limit := r.FormValue("limit")
 	if limit == "" {
 		limit = "40"
 	}
 	Limit, err := strconv.ParseInt(limit, 10, 64)
+	fmt.Printf("%d\n", Limit)
 	if err != nil {
 		httperror.BadRequest(w, err)
 		return
