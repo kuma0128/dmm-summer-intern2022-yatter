@@ -59,7 +59,8 @@ func (r *timeline) FindPublicTimelines(ctx context.Context, max_id int64, since_
 	if max_id != 0 && since_id != 0 {
 		result, err := r.db.QueryxContext(ctx, `SELECT status.id, status.account_id, status.content,
 		 status.create_at, account.id "account.id", account.username "account.username",
-		 account.create_at "account.create_at" FROM status LEFT JOIN account ON status.account_id = account.id  WHERE status.id BETWEEN ? AND ? LIMIT ?`, since_id, max_id, limit)
+		 account.create_at "account.create_at" FROM status LEFT JOIN account ON status.account_id = account.id 
+		 WHERE status.id BETWEEN ? AND ? LIMIT ?`, since_id, max_id, limit)
 		if err != nil {
 			return nil, fmt.Errorf("%w", err)
 		}

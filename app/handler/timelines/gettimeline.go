@@ -2,7 +2,7 @@ package timelines
 
 import (
 	"encoding/json"
-	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 	"strings"
@@ -25,6 +25,9 @@ func (h *handler) Gettimeline(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	Max_id, err := strconv.ParseInt(max_id, 10, 64)
+	if Max_id == 0 {
+		Max_id = math.MaxInt64
+	}
 	//fmt.Printf("%d\n", Max_id)
 	if err != nil {
 		httperror.BadRequest(w, err)
@@ -33,7 +36,7 @@ func (h *handler) Gettimeline(w http.ResponseWriter, r *http.Request) {
 
 	since_id := r.FormValue("since_id")
 	if since_id == "" {
-		since_id = "0"
+		since_id = "1"
 	}
 	if strings.Contains(since_id, "-") {
 		httperror.BadRequest(w, errors.Errorf("negative ID doesn't existe"))
@@ -56,7 +59,7 @@ func (h *handler) Gettimeline(w http.ResponseWriter, r *http.Request) {
 		limit = "40"
 	}
 	Limit, err := strconv.ParseInt(limit, 10, 64)
-	fmt.Printf("%d\n", Limit)
+	//fmt.Printf("%d\n", Limit)
 	if err != nil {
 		httperror.BadRequest(w, err)
 		return
