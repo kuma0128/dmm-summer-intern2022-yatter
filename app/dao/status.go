@@ -24,7 +24,7 @@ func NewStatus(db *sqlx.DB) repository.Status {
 }
 
 // CreateStatus : statusを作成
-func (r *status) CreateStatus(ctx context.Context, status *object.Status, account *object.Account) (*object.Status, sql.Result, error) {
+func (r *status) AddStatus(ctx context.Context, status *object.Status, account *object.Account) (*object.Status, sql.Result, error) {
 	entity := new(object.Status)
 	result, err := r.db.ExecContext(ctx, "INSERT INTO status (account_id, content) VALUES (?, ?)", account.ID, status.Content)
 	if err != nil {
@@ -34,7 +34,7 @@ func (r *status) CreateStatus(ctx context.Context, status *object.Status, accoun
 }
 
 //get status : statusを取得
-func (r *status) FindByStatusID(ctx context.Context, sid int64) (*object.Status, error) {
+func (r *status) FindStatusByID(ctx context.Context, sid int64) (*object.Status, error) {
 	entity := new(object.Status)
 	err := r.db.QueryRowxContext(ctx, "SELECT * FROM status WHERE id = ?", sid).StructScan(entity)
 

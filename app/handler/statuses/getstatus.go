@@ -26,13 +26,13 @@ func (h *handler) Getstatus(w http.ResponseWriter, r *http.Request) {
 
 	statusRepo := h.app.Dao.Status()
 	var status_info *object.Status
-	status_info, err = statusRepo.FindByStatusID(ctx, Sid)
+	status_info, err = statusRepo.FindStatusByID(ctx, Sid)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}
 	var account_info *object.Account
 	uid := status_info.AccountID
-	account_info, err = statusRepo.FindByAccountID(ctx, uid)
+	account_info, err = statusRepo.FindAccountByID(ctx, uid)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}

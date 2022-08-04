@@ -33,7 +33,7 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 
 	// domain/repository の取得
 	accountRepo := h.app.Dao.Account()
-	if err := accountRepo.CreateAccount(ctx, account); err != nil {
+	if err := accountRepo.AddAccount(ctx, account); err != nil {
 		httperror.InternalServerError(w, err)
 	}
 

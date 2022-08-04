@@ -34,7 +34,7 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	var newstatus *object.Status
 	var err error
 	var result sql.Result
-	newstatus, result, err = statusRepo.CreateStatus(ctx, status, Account_auth)
+	newstatus, result, err = statusRepo.AddStatus(ctx, status, Account_auth)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}
@@ -43,7 +43,7 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}
-	newstatus, err = statusRepo.FindByStatusID(ctx, newstatus.Sid)
+	newstatus, err = statusRepo.FindStatusByID(ctx, newstatus.Sid)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}

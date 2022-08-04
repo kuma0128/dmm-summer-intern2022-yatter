@@ -18,6 +18,6 @@ func NewTimeline(db *sqlx.DB) repository.Timeline {
 	return &timeline{db: db}
 }
 
-func (r *timeline) FindTimeline() {
+func (r *timeline) FindPublicTimelines() {
 
 }
