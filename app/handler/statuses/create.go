@@ -28,9 +28,15 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	status := new(object.Status)
 	status.Content = req.Status
 
-	if err := statusRepo.CreateStatus(ctx, status, Account_auth); err != nil {
+	result, err := statusRepo.CreateStatus(ctx, status, Account_auth)
+	if err != nil {
 		httperror.InternalServerError(w, err)
 	}
+	status.Sid, err = result.LastInsertId()
+	if err != nil {
+		httperror.InternalServerError(w, err)
+	}
+	status.Account = *Account_auth
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(status); err != nil {

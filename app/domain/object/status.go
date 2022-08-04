@@ -6,7 +6,7 @@ type (
 	// Account account
 	Status struct {
 		// The status ID
-		S_id StatusID `json:"-" db:"id"`
+		Sid StatusID `json:"id" db:"id"`
 
 		// The accout id
 		AccountID AccountID `json:"-" db:"account_id"`
