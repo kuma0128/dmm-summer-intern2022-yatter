@@ -24,12 +24,13 @@ func NewStatus(db *sqlx.DB) repository.Status {
 }
 
 // CreateStatus : statusを作成
-func (r *status) CreateStatus(ctx context.Context, status *object.Status, account *object.Account) (sql.Result, error) {
+func (r *status) CreateStatus(ctx context.Context, status *object.Status, account *object.Account) (*object.Status, sql.Result, error) {
+	entity := new(object.Status)
 	result, err := r.db.ExecContext(ctx, "INSERT INTO status (account_id, content) VALUES (?, ?)", account.ID, status.Content)
 	if err != nil {
-		return result, fmt.Errorf("%w", err)
+		return entity, result, fmt.Errorf("%w", err)
 	}
-	return result, err
+	return entity, result, err
 }
 
 //get status : statusを取得

@@ -1,6 +1,7 @@
 package statuses
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"yatter-backend-go/app/domain/object"
@@ -30,17 +31,26 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 
 	status.Account = *Account_auth
 
-	result, err := statusRepo.CreateStatus(ctx, status, Account_auth)
-	if err != nil {
-		httperror.InternalServerError(w, err)
-	}
-	status.Sid, err = result.LastInsertId()
+	var newstatus *object.Status
+	var err error
+	var result sql.Result
+	newstatus, result, err = statusRepo.CreateStatus(ctx, status, Account_auth)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}
 
+	newstatus.Sid, err = result.LastInsertId()
+	if err != nil {
+		httperror.InternalServerError(w, err)
+	}
+	newstatus, err = statusRepo.FindByStatusID(ctx, newstatus.Sid)
+	if err != nil {
+		httperror.InternalServerError(w, err)
+	}
+	newstatus.Account = status.Account
+
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(status); err != nil {
+	if err := json.NewEncoder(w).Encode(newstatus); err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}

@@ -31,16 +31,21 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//_ = h.app.Dao.Account() // domain/repository の取得
-	//panic("Must Implement Account Registration")
-
+	// domain/repository の取得
 	accountRepo := h.app.Dao.Account()
 	if err := accountRepo.CreateAccount(ctx, account); err != nil {
 		httperror.InternalServerError(w, err)
 	}
 
+	var newaccount *object.Account
+	var err error
+	newaccount, err = accountRepo.FindByUsername(ctx, req.Username)
+	if err != nil {
+		httperror.InternalServerError(w, err)
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(account); err != nil {
+	if err := json.NewEncoder(w).Encode(newaccount); err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
