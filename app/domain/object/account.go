@@ -14,10 +14,10 @@ type (
 	// Account account
 	Account struct {
 		// The internal ID of the account
-		ID AccountID `json:"-" db:"id"`
+		ID AccountID `json:"-"`
 
 		// The username of the account
-		Username string `json:"username,omitempty" db:"username"`
+		Username string `json:"username,omitempty"`
 
 		// The username of the account
 		PasswordHash string `json:"-" db:"password_hash"`
@@ -26,13 +26,13 @@ type (
 		DisplayName *string `json:"display_name,omitempty" db:"display_name"`
 
 		// URL to the avatar image
-		Avatar *string `json:"avatar,omitempty" db:"avatar"`
+		Avatar *string `json:"avatar,omitempty"`
 
 		// URL to the header image
-		Header *string `json:"header,omitempty" db:"header"`
+		Header *string `json:"header,omitempty"`
 
 		// Biography of user
-		Note *string `json:"note,omitempty" db:"note"`
+		Note *string `json:"note,omitempty"`
 
 		// The time the account was created
 		CreateAt DateTime `json:"create_at,omitempty" db:"create_at"`
