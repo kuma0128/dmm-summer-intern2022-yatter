@@ -33,6 +33,11 @@ func (r *status) AddStatus(ctx context.Context, status *object.Status, account *
 	return entity, result, err
 }
 
+// delete status
+func (r *status) DeleteStatus(ctx context.Context, sid int64, accout *object.Account) error {
+	return nil
+}
+
 //get status : statusを取得
 func (r *status) FindStatusByID(ctx context.Context, sid int64) (*object.Status, error) {
 	entity := new(object.Status)
