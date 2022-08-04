@@ -37,6 +37,15 @@ type (
 		// The time the account was created
 		CreateAt DateTime `json:"create_at,omitempty" db:"create_at"`
 	}
+
+	//relationship
+	Relationship struct {
+		id AccountID
+
+		following bool
+
+		followed_by bool
+	}
 )
 
 // Check if given password is match to account's password
