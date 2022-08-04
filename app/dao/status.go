@@ -46,3 +46,17 @@ func (r *status) FindByStatusID(ctx context.Context, s_id int64) (*object.Status
 	}
 	return entity, nil
 }
+
+//get accout : s_idからaccountを取得
+func (r *status) FindAccountByStatusID(ctx context.Context, s_id int64) (*object.Account, error) {
+	entity := new(object.Account)
+	err := r.db.QueryRowxContext(ctx, "SELECT * FROM account WHERE id = (SELECT account_id FROM status WHERE id = ?)", s_id).StructScan(entity)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, fmt.Errorf("%w", err)
+	}
+	return entity, nil
+}
