@@ -36,7 +36,7 @@ func (r *status) AddStatus(ctx context.Context, status *object.Status, account *
 //get status : statusを取得
 func (r *status) FindStatusByID(ctx context.Context, sid int64) (*object.Status, error) {
 	entity := new(object.Status)
-	err := r.db.QueryRowxContext(ctx, "SELECT * FROM status WHERE id = ?", sid).StructScan(entity)
+	err := r.db.QueryRowxContext(ctx, "SELECT id, account_id, content, create_at FROM status WHERE id = ?", sid).StructScan(entity)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
