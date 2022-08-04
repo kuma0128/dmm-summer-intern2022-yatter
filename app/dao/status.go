@@ -35,6 +35,19 @@ func (r *status) AddStatus(ctx context.Context, status *object.Status, account *
 
 // delete status
 func (r *status) DeleteStatus(ctx context.Context, sid int64, accout *object.Account) error {
+	result, err := r.db.ExecContext(ctx, "SELECT id FROM status WHERE id = ?", sid)
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
+	cnt, _ := result.RowsAffected()
+	fmt.Printf("%d\n", cnt)
+	if cnt == 0 {
+		return fmt.Errorf("negative ID doesn't existe")
+	}
+	_, err = r.db.ExecContext(ctx, "DELETE FROM status WHERE id = ?", sid)
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
 	return nil
 }
 
