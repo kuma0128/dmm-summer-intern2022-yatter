@@ -20,7 +20,7 @@ func (h *handler) Gettimeline(w http.ResponseWriter, r *http.Request) {
 	if max_id == "" {
 		max_id = "0"
 	}
-	if !strings.Contains(max_id, "-") {
+	if strings.Contains(max_id, "-") {
 		httperror.BadRequest(w, errors.Errorf("negative ID doesn't existe"))
 		return
 	}
@@ -34,7 +34,7 @@ func (h *handler) Gettimeline(w http.ResponseWriter, r *http.Request) {
 	if since_id == "" {
 		since_id = "0"
 	}
-	if !strings.Contains(since_id, "-") {
+	if strings.Contains(since_id, "-") {
 		httperror.BadRequest(w, errors.Errorf("negative ID doesn't existe"))
 		return
 	}
@@ -54,7 +54,7 @@ func (h *handler) Gettimeline(w http.ResponseWriter, r *http.Request) {
 	if limit == "" {
 		limit = "40"
 	}
-	Limit, err := strconv.ParseInt(limit, 10, 32)
+	Limit, err := strconv.ParseInt(limit, 10, 64)
 	if err != nil {
 		httperror.BadRequest(w, err)
 		return
@@ -63,7 +63,7 @@ func (h *handler) Gettimeline(w http.ResponseWriter, r *http.Request) {
 		Limit = 80
 	}
 
-	var statuses []object.Status
+	var statuses []*object.Status
 
 	timelineRepo := h.app.Dao.Timeline()
 	statuses, err = timelineRepo.FindPublicTimelines(ctx, Max_id, Since_id, Limit)

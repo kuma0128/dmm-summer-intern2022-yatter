@@ -9,10 +9,10 @@ type (
 		Sid StatusID `json:"id" db:"id"`
 
 		// The accout id
-		AccountID AccountID `json:"-" db:"account_id"`
+		AccountID AccountID `json:"account_id" db:"account_id"`
 
 		// The information of the account
-		Account Account `json:"-"`
+		Account Account `json:"account" db:"account"`
 
 		// content
 		Content string `json:"content,omitempty" db:"content"`
