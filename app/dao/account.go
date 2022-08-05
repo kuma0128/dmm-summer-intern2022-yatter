@@ -82,13 +82,13 @@ func (r *account) UnFollowAccount(ctx context.Context, uid int64, deleteid int64
 
 //get relation
 func (r *account) FindRelationByID(ctx context.Context, uid int64, followedid int64) (bool, error) {
-	result, err := r.db.ExecContext(ctx, "SELECT follower_id FROM relation WHERE follower_id = ? AND followee_id = ?", uid, followedid)
+	result, err := r.db.QueryxContext(ctx, "SELECT follower_id FROM relation WHERE follower_id = ? AND followee_id = ?", uid, followedid)
 	if err != nil {
 		return false, fmt.Errorf("%w", err)
 	}
-	cnt, err := result.RowsAffected()
+	//fmt.Printf("%d\n", cnt)
 	var following bool
-	if cnt == 0 {
+	if result == nil {
 		following = false
 	} else {
 		following = true

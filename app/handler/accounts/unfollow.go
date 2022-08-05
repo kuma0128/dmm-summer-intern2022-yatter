@@ -34,7 +34,7 @@ func (h *handler) Unfollow(w http.ResponseWriter, r *http.Request) {
 		httperror.InternalServerError(w, err)
 	}
 
-	if !flag {
+	if flag {
 		err = accountRepo.UnFollowAccount(ctx, Account_auth.ID, _account.ID)
 		if err != nil {
 			httperror.InternalServerError(w, err)
