@@ -91,7 +91,7 @@ func (r *account) FingFollowerByName(ctx context.Context, uid int64, limit int64
 	var entity []*object.Account
 
 	result, err := r.db.QueryxContext(ctx, `SELECT DISTINCT account.id, account.username,
-	account.create_at FROM relation LEFT JOIN account ON relation.follower_id = account.id WHERE account.id = ? LIMIT ?`,
+	account.create_at FROM relation LEFT JOIN account ON relation.followee_id = account.id AND relation.follower_id = ? LIMIT ?`,
 		uid, limit)
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
