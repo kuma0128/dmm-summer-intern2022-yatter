@@ -33,9 +33,9 @@ func (r *timeline) FindPublicTimelines(ctx context.Context, max_id int64, since_
 		if err != nil {
 			return nil, fmt.Errorf("%w", err)
 		}
-		fmt.Printf("%d\n", max_id)
-		fmt.Printf("%d\n", since_id)
-		fmt.Printf("%d\n", limit)
+		// fmt.Printf("%d\n", max_id)
+		// fmt.Printf("%d\n", since_id)
+		// fmt.Printf("%d\n", limit)
 		//result2, err := r.db.QueryxContext(ctx, "SELECT * FROM account WHERE id IN (SELECT account_id FROM status LIMIT ?)", limit)
 		//result2.StructScan(accounts)
 		for result.Next() {
@@ -81,6 +81,48 @@ func (r *timeline) FindPublicTimelines(ctx context.Context, max_id int64, since_
 
 func (r *timeline) FindHomeTimelines(ctx context.Context, uid int64, max_id int64, since_id int64, limit int64) ([]*object.Status, error) {
 	var entity []*object.Status
+
+	if max_id == 0 && since_id == 0 {
+		result, err := r.db.QueryxContext(ctx, `SELECT DISTINCT status.id, status.account_id, status.content,
+		status.create_at, account.id "account.id", account.username "account.username",
+		account.create_at "account.create_at" FROM status 
+		LEFT JOIN account ON status.account_id = account.id 
+		INNER JOIN relation ON  status.account_id IN(SELECT followee_id FROM relation WHERE follower_id = ?) LIMIT ?`, uid, limit)
+		if err != nil {
+			return nil, fmt.Errorf("%w", err)
+		}
+		for result.Next() {
+			var tmp object.Status
+			err = result.StructScan(&tmp)
+			if err != nil {
+				return nil, fmt.Errorf("%w", err)
+			}
+			entity = append(entity, &tmp)
+		}
+		return entity, err
+	}
+
+	if max_id != 0 && since_id != 0 {
+		result, err := r.db.QueryxContext(ctx, `SELECT DISTINCT status.id, status.account_id, status.content,
+		status.create_at, account.id "account.id", account.username "account.username",
+		account.create_at "account.create_at" FROM status 
+		LEFT JOIN account ON status.account_id = account.id 
+		INNER JOIN relation ON  status.account_id IN(SELECT followee_id FROM relation WHERE follower_id = ?)
+		WHERE status.id BETWEEN ? AND ? LIMIT ?`, uid, since_id, max_id, limit)
+		if err != nil {
+			return nil, fmt.Errorf("%w", err)
+		}
+
+		for result.Next() {
+			var tmp object.Status
+			err = result.StructScan(&tmp)
+			if err != nil {
+				return nil, fmt.Errorf("%w", err)
+			}
+			entity = append(entity, &tmp)
+		}
+		return entity, err
+	}
 
 	return entity, nil
 }
