@@ -87,7 +87,7 @@ func (r *account) FindRelationByID(ctx context.Context, uid int64, followedid in
 }
 
 //get following
-func (r *account) FingFollowerByName(ctx context.Context, uid int64, limit int64) ([]*object.Account, error) {
+func (r *account) FindFollowingByName(ctx context.Context, uid int64, limit int64) ([]*object.Account, error) {
 	var entity []*object.Account
 
 	result, err := r.db.QueryxContext(ctx, `SELECT DISTINCT account.id, account.username,
@@ -107,4 +107,46 @@ func (r *account) FingFollowerByName(ctx context.Context, uid int64, limit int64
 	}
 
 	return entity, err
+}
+
+func (r *account) FindFollowerByName(ctx context.Context, uid int64, max_id int64, since_id int64, limit int64) ([]*object.Account, error) {
+	var entity []*object.Account
+	if max_id == 0 && since_id == 0 {
+		result, err := r.db.QueryxContext(ctx, `SELECT DISTINCT account.id, account.username,
+		account.create_at FROM relation LEFT JOIN account ON relation.follower_id = account.id AND relation.followee_id = ? LIMIT ?`,
+			uid, limit)
+		if err != nil {
+			return nil, fmt.Errorf("%w", err)
+		}
+
+		for result.Next() {
+			var tmp object.Account
+			err = result.StructScan(&tmp)
+			if err != nil {
+				return nil, fmt.Errorf("%w", err)
+			}
+			entity = append(entity, &tmp)
+		}
+		return entity, err
+	}
+
+	if max_id != 0 && since_id != 0 {
+		result, err := r.db.QueryxContext(ctx, `SELECT DISTINCT account.id, account.username,
+		account.create_at FROM relation LEFT JOIN account ON relation.followee_id = account.id AND relation.follower_id = ? WHERE account.id BETWEEN ? AND ? LIMIT ?`,
+			uid, max_id, since_id, limit)
+		if err != nil {
+			return nil, fmt.Errorf("%w", err)
+		}
+
+		for result.Next() {
+			var tmp object.Account
+			err = result.StructScan(&tmp)
+			if err != nil {
+				return nil, fmt.Errorf("%w", err)
+			}
+			entity = append(entity, &tmp)
+		}
+		return entity, err
+	}
+	return entity, nil
 }
