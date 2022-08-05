@@ -49,10 +49,10 @@ type (
 		ID AccountID `json:"id"`
 
 		//Whether the user is currently following the account
-		Following bool `json:"following"`
+		Following bool `json:"following" db:"follower_id"`
 
 		//Whether the user is currently being followed by the account
-		Followed_by bool `json:"followed_by"`
+		Followed_by bool `json:"followed_by" db:"followee_id"`
 	}
 )
 

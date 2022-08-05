@@ -85,3 +85,26 @@ func (r *account) FindRelationByID(ctx context.Context, uid int64, followedid in
 	}
 	return following, err
 }
+
+//get following
+func (r *account) FingFollowerByName(ctx context.Context, uid int64, limit int64) ([]*object.Account, error) {
+	var entity []*object.Account
+
+	result, err := r.db.QueryxContext(ctx, `SELECT DISTINCT account.id, account.username,
+	account.create_at FROM relation LEFT JOIN account ON relation.follower_id = account.id WHERE account.id = ? LIMIT ?`,
+		uid, limit)
+	if err != nil {
+		return nil, fmt.Errorf("%w", err)
+	}
+
+	for result.Next() {
+		var tmp object.Account
+		err = result.StructScan(&tmp)
+		if err != nil {
+			return nil, fmt.Errorf("%w", err)
+		}
+		entity = append(entity, &tmp)
+	}
+
+	return entity, err
+}
