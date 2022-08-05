@@ -87,7 +87,7 @@ func (r *account) FindRelationByID(ctx context.Context, uid int64, followedid in
 }
 
 //get following
-func (r *account) FindFollowingByName(ctx context.Context, uid int64, limit int64) ([]*object.Account, error) {
+func (r *account) FindFollowingByID(ctx context.Context, uid int64, limit int64) ([]*object.Account, error) {
 	var entity []*object.Account
 
 	result, err := r.db.QueryxContext(ctx, `SELECT DISTINCT account.id, account.username,
@@ -109,7 +109,7 @@ func (r *account) FindFollowingByName(ctx context.Context, uid int64, limit int6
 	return entity, err
 }
 
-func (r *account) FindFollowerByName(ctx context.Context, uid int64, max_id int64, since_id int64, limit int64) ([]*object.Account, error) {
+func (r *account) FindFollowerByID(ctx context.Context, uid int64, max_id int64, since_id int64, limit int64) ([]*object.Account, error) {
 	var entity []*object.Account
 	if max_id == 0 && since_id == 0 {
 		result, err := r.db.QueryxContext(ctx, `SELECT DISTINCT account.id, account.username,

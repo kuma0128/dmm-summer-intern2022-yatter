@@ -78,7 +78,7 @@ func (h *handler) Follower(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var accounts []*object.Account
-	accounts, err = accountRepo.FindFollowerByName(ctx, _account.ID, Max_id, Since_id, Limit)
+	accounts, err = accountRepo.FindFollowerByID(ctx, _account.ID, Max_id, Since_id, Limit)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}

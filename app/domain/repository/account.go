@@ -18,7 +18,7 @@ type Account interface {
 
 	FindRelationByID(ctx context.Context, uid int64, followedid int64) (bool, error)
 
-	FindFollowingByName(ctx context.Context, uid int64, limit int64) ([]*object.Account, error)
+	FindFollowingByID(ctx context.Context, uid int64, limit int64) ([]*object.Account, error)
 
-	FindFollowerByName(ctx context.Context, uid int64, max_id int64, since_id int64, limit int64) ([]*object.Account, error)
+	FindFollowerByID(ctx context.Context, uid int64, max_id int64, since_id int64, limit int64) ([]*object.Account, error)
 }
