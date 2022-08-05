@@ -78,3 +78,9 @@ func (r *timeline) FindPublicTimelines(ctx context.Context, max_id int64, since_
 
 	return entity, nil
 }
+
+func (r *timeline) FindHomeTimelines(ctx context.Context, uid int64, max_id int64, since_id int64, limit int64) ([]*object.Status, error) {
+	var entity []*object.Status
+
+	return entity, nil
+}
