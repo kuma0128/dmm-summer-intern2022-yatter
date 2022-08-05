@@ -26,18 +26,30 @@ func (h *handler) Follow(w http.ResponseWriter, r *http.Request) {
 
 	Account_auth := auth.AccountOf(r)
 
-	err = accountRepo.FollowAccount(ctx, Account_auth.ID, _account.ID)
-	if err != nil {
-		httperror.InternalServerError(w, err)
-	}
-
 	relation := new(object.Relationship)
 	var flag bool
 	flag, err = accountRepo.FindRelationByID(ctx, Account_auth.ID, _account.ID)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}
-	//fmt.Printf("%d", Account_auth.ID)
+
+	if !flag {
+		err = accountRepo.FollowAccount(ctx, Account_auth.ID, _account.ID)
+		if err != nil {
+			httperror.InternalServerError(w, err)
+		}
+
+		relation.ID = Account_auth.ID
+		relation.Following = flag
+		relation.Followed_by = true // This func is Follow
+
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(relation); err != nil {
+			httperror.InternalServerError(w, err)
+			return
+		}
+	}
+
 	relation.ID = Account_auth.ID
 	relation.Following = flag
 	relation.Followed_by = true // This func is Follow
