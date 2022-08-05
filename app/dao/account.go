@@ -47,7 +47,7 @@ func (r *account) FindByUsername(ctx context.Context, username string) (*object.
 	return entity, nil
 }
 
-//get accout : s_idからaccountを取得
+//get account : s_idからaccountを取得
 func (r *status) FindAccountByID(ctx context.Context, uid int64) (*object.Account, error) {
 	entity := new(object.Account)
 	err := r.db.QueryRowxContext(ctx, "SELECT id, username, password_hash, display_name, avatar, header, note, create_at FROM account WHERE id = ?", uid).StructScan(entity)
@@ -59,4 +59,29 @@ func (r *status) FindAccountByID(ctx context.Context, uid int64) (*object.Accoun
 		return nil, fmt.Errorf("%w", err)
 	}
 	return entity, nil
+}
+
+//follow user
+func (r *account) FollowAccount(ctx context.Context, uid int64, followedid int64) error {
+	_, err := r.db.ExecContext(ctx, "INSERT INTO relation (follower_id, followee_id) VALUES (?, ?)", uid, followedid)
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
+	return err
+}
+
+//get relation
+func (r *account) FindRelationByID(ctx context.Context, uid int64, followedid int64) (bool, error) {
+	result, err := r.db.ExecContext(ctx, "SELECT follower_id FROM relation WHERE follower_id = ? AND followee_id = ?", uid, followedid)
+	if err != nil {
+		return false, fmt.Errorf("%w", err)
+	}
+	cnt, err := result.RowsAffected()
+	var following bool
+	if cnt == 0 {
+		following = false
+	} else {
+		following = true
+	}
+	return following, err
 }

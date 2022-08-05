@@ -1,4 +1,5 @@
-CREATE TABLE `account` (
+DROP TABLE IF EXISTS `account`;
+CREATE TABLE IF NOT EXISTS `account` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL UNIQUE,
   `password_hash` varchar(255) NOT NULL,
@@ -10,7 +11,8 @@ CREATE TABLE `account` (
   PRIMARY KEY (`id`)
 )DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `status` (
+DROP TABLE IF EXISTS `status`;
+CREATE TABLE IF NOT EXISTS `status` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `account_id` bigint(20) NOT NULL,
   `content` text NOT NULL,
@@ -19,3 +21,11 @@ CREATE TABLE `status` (
   INDEX `idx_account_id` (`account_id`),
   CONSTRAINT `fk_status_account_id` FOREIGN KEY (`account_id`) REFERENCES  `account` (`id`)
 )DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `relation`;
+CREATE TABLE IF NOT EXISTS `relation` (
+  `follower_id` bigint(20) NOT NULL,
+  `followee_id` bigint(20) NOT NULL,
+  CONSTRAINT `fk_relation_follower_id` FOREIGN KEY (`follower_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `fk_relation_followee_id` FOREIGN KEY (`followee_id`) REFERENCES `account` (`id`)
+)

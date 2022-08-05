@@ -13,4 +13,8 @@ type Account interface {
 	// TODO: Add Other APIs
 	// Create user
 	AddAccount(ctx context.Context, account *object.Account) error
+
+	FollowAccount(ctx context.Context, uid int64, followedid int64) error
+
+	FindRelationByID(ctx context.Context, uid int64, followedid int64) (bool, error)
 }

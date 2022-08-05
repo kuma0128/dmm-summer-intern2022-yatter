@@ -36,15 +36,23 @@ type (
 
 		// The time the account was created
 		CreateAt DateTime `json:"create_at,omitempty" db:"create_at"`
+
+		//The number of followers for the account
+		Followers_count int32 `json:"followers.count"`
+
+		//The number of accounts the given account is following
+		Following_count int32 `json:"following_count"`
 	}
 
 	//relationship
 	Relationship struct {
-		id AccountID
+		ID AccountID `json:"id"`
 
-		following bool
+		//Whether the user is currently following the account
+		Following bool `json:"following"`
 
-		followed_by bool
+		//Whether the user is currently being followed by the account
+		Followed_by bool `json:"followed_by"`
 	}
 )
 
