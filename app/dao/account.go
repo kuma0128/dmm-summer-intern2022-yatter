@@ -70,6 +70,16 @@ func (r *account) FollowAccount(ctx context.Context, uid int64, followedid int64
 	return err
 }
 
+//unfollow user
+func (r *account) UnFollowAccount(ctx context.Context, uid int64, deleteid int64) error {
+	var err error
+	_, err = r.db.ExecContext(ctx, "DELETE FROM relation WHERE follower_id = ? AND followee_id = ?", uid, deleteid)
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
+	return nil
+}
+
 //get relation
 func (r *account) FindRelationByID(ctx context.Context, uid int64, followedid int64) (bool, error) {
 	result, err := r.db.ExecContext(ctx, "SELECT follower_id FROM relation WHERE follower_id = ? AND followee_id = ?", uid, followedid)

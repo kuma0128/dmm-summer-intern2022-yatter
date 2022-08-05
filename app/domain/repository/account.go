@@ -16,6 +16,8 @@ type Account interface {
 
 	FollowAccount(ctx context.Context, uid int64, followedid int64) error
 
+	UnFollowAccount(ctx context.Context, uid int64, deleteid int64) error
+
 	FindRelationByID(ctx context.Context, uid int64, followedid int64) (bool, error)
 
 	FindFollowingByID(ctx context.Context, uid int64, limit int64) ([]*object.Account, error)
