@@ -56,6 +56,21 @@ type (
 	}
 )
 
+// Create new account object
+func CreateAccountobject(username, password string) (*Account, error) {
+	if len(username) > 10 {
+		return &Account{}, errors.New("username is too long")
+	}
+	account := Account{
+		Username: username,
+	}
+	if err := account.SetPassword(password); err != nil {
+		return &Account{}, errors.New("password is too short")
+	}
+	return &account, nil
+
+}
+
 // Check if given password is match to account's password
 func (a *Account) CheckPassword(pass string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(a.PasswordHash), []byte(pass)) == nil

@@ -2,7 +2,6 @@ package accounts
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"yatter-backend-go/app/domain/object"
@@ -25,26 +24,20 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	account := new(object.Account)
-	if len(req.Username) > 10 {
-		err := errors.New("username is too long")
+	// domain/repository の取得
+	accountRepo := h.app.Dao.Account()
+
+	account, err := object.CreateAccountobject(req.Username, req.Password)
+	if err != nil {
 		httperror.BadRequest(w, err)
 		return
 	}
-	account.Username = req.Username
-	if err := account.SetPassword(req.Password); err != nil {
-		httperror.InternalServerError(w, err)
-		return
-	}
 
-	// domain/repository の取得
-	accountRepo := h.app.Dao.Account()
 	if err := accountRepo.AddAccount(ctx, account); err != nil {
 		httperror.InternalServerError(w, err)
 	}
 
 	var newaccount *object.Account
-	var err error
 	newaccount, err = accountRepo.FindByUsername(ctx, req.Username)
 	if err != nil {
 		httperror.InternalServerError(w, err)
