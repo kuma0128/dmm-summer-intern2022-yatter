@@ -28,6 +28,9 @@ func CreateStatusobject(content string, account *Account) (*Status, error) {
 	if len(content) > 120 {
 		return &Status{}, errors.New("status content is too long")
 	}
+	if len(content) == 0 {
+		return &Status{}, errors.New("need status content")
+	}
 	status := Status{
 		AccountID: account.ID,
 		Account:   *account,
