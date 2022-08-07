@@ -1,14 +1,14 @@
 name: test
 
- on:
-   push:
-     branches:
-       - '**'
+on:
+  push:
+    branches:
+      - '**'
 
- env:
+env:
    GO_VERSION: 1.18
 
- jobs:
+jobs:
    test:
      name: Test
      runs-on: ubuntu-latest
