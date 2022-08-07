@@ -75,9 +75,9 @@ func Test_Account_CreateStatusobject(t *testing.T) {
 				if got.Content != tt.want.status.Content {
 					t.Error("invalid content")
 				}
-				// if got.Account != tt.want.status.Account {
-				// 	t.Error("invalid account")
-				// }
+				if got.AccountID != tt.want.status.AccountID {
+					t.Error("invalid account")
+				}
 				if err != nil {
 					t.Error("error is happened")
 				}
