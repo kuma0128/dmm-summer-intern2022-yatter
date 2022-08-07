@@ -25,17 +25,16 @@ func NewStatus(db *sqlx.DB) repository.Status {
 
 // CreateStatus : statusを作成
 func (r *status) AddStatus(ctx context.Context, status *object.Status, uid int64) (*object.Status, error) {
-	entity := new(object.Status)
 	result, err := r.db.ExecContext(ctx, "INSERT INTO status (account_id, content) VALUES (?, ?)", uid, status.Content)
 	if err != nil {
-		return entity, fmt.Errorf("%w", err)
+		return status, fmt.Errorf("%w", err)
 	}
 
-	entity.Sid, err = result.LastInsertId()
+	status.Sid, err = result.LastInsertId()
 	if err != nil {
-		return entity, fmt.Errorf("%w", err)
+		return status, fmt.Errorf("%w", err)
 	}
-	return entity, err
+	return status, err
 }
 
 // delete status
