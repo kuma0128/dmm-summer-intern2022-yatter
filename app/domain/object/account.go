@@ -63,6 +63,9 @@ func (a *Account) CheckPassword(pass string) bool {
 
 // Hash password and set it to account object
 func (a *Account) SetPassword(pass string) error {
+	if len(pass) < 5 {
+		return errors.New("password is too short")
+	}
 	passwordHash, err := generatePasswordHash(pass)
 	if err != nil {
 		return fmt.Errorf("generate error: %w", err)
