@@ -1,5 +1,7 @@
 package object
 
+import "errors"
+
 type (
 	StatusID = int64
 
@@ -21,3 +23,15 @@ type (
 		CreateAt DateTime `json:"create_at,omitempty" db:"create_at"`
 	}
 )
+
+func CreateStatusobject(content string, account *Account) (*Status, error) {
+	if len(content) > 120 {
+		return &Status{}, errors.New("status content is too long")
+	}
+	status := Status{
+		AccountID: account.ID,
+		Account:   *account,
+		Content:   content,
+	}
+	return &status, nil
+}
