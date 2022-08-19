@@ -19,39 +19,39 @@ func (h *handler) Follower(w http.ResponseWriter, r *http.Request) {
 
 	username := chi.URLParam(r, "username")
 
-	max_id := r.FormValue("max_id")
-	if max_id == "" {
-		max_id = "0"
+	maxID := r.FormValue("max_id")
+	if maxID == "" {
+		maxID = "0"
 	}
-	if strings.Contains(max_id, "-") {
+	if strings.Contains(maxID, "-") {
 		httperror.BadRequest(w, errors.Errorf("negative ID doesn't existe"))
 		return
 	}
-	Max_id, err := strconv.ParseInt(max_id, 10, 64)
-	if Max_id == 0 {
-		Max_id = math.MaxInt64
+	MaxID, err := strconv.ParseInt(maxID, 10, 64)
+	if MaxID == 0 {
+		MaxID = math.MaxInt64
 	}
 	if err != nil {
 		httperror.BadRequest(w, err)
 		return
 	}
 
-	since_id := r.FormValue("since_id")
-	if since_id == "" {
-		since_id = "1"
+	sinceID := r.FormValue("since_id")
+	if sinceID == "" {
+		sinceID = "1"
 	}
-	if strings.Contains(since_id, "-") {
+	if strings.Contains(sinceID, "-") {
 		httperror.BadRequest(w, errors.Errorf("negative ID doesn't existe"))
 		return
 	}
-	Since_id, err := strconv.ParseInt(since_id, 10, 64)
+	SinceID, err := strconv.ParseInt(sinceID, 10, 64)
 	if err != nil {
 		httperror.BadRequest(w, err)
 		return
 	}
 
 	//max_id < since_id はエラー
-	if Max_id < Since_id {
+	if MaxID < SinceID {
 		httperror.BadRequest(w, errors.Errorf("Need that max_id is bigger than since_id"))
 		return
 	}
@@ -78,7 +78,7 @@ func (h *handler) Follower(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var accounts []*object.Account
-	accounts, err = accountRepo.FindFollowerByID(ctx, _account.ID, Max_id, Since_id, Limit)
+	accounts, err = accountRepo.FindFollowerByID(ctx, _account.ID, MaxID, SinceID, Limit)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}

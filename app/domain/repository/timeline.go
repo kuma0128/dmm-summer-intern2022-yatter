@@ -7,7 +7,7 @@ import (
 
 type Timeline interface {
 	//get timeline
-	FindPublicTimelines(ctx context.Context, max_id int64, since_id int64, limit int64) ([]*object.Status, error)
+	FindPublicTimelines(ctx context.Context, maxID int64, sinceID int64, limit int64) ([]*object.Status, error)
 
-	FindHomeTimelines(ctx context.Context, uid int64, max_id int64, since_id int64, limit int64) ([]*object.Status, error)
+	FindHomeTimelines(ctx context.Context, uID int64, maxID int64, sinceID int64, limit int64) ([]*object.Status, error)
 }

@@ -62,8 +62,8 @@ func (r *account) FindByID(ctx context.Context, uID int64) (*object.Account, err
 }
 
 // follow user
-func (r *account) FollowAccount(ctx context.Context, uid int64, followedid int64) error {
-	_, err := r.db.ExecContext(ctx, "INSERT INTO relation (follower_id, followee_id) VALUES (?, ?)", uid, followedid)
+func (r *account) FollowAccount(ctx context.Context, uID int64, followedID int64) error {
+	_, err := r.db.ExecContext(ctx, "INSERT INTO relation (follower_id, followee_id) VALUES (?, ?)", uID, followedID)
 	if err != nil {
 		return fmt.Errorf("%w", err)
 	}

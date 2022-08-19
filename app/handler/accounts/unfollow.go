@@ -11,7 +11,7 @@ import (
 )
 
 // Handle request for `POST /v1/accounts/{username}/unfollow`
-func (h *handler) Unfollow(w http.ResponseWriter, r *http.Request) {
+func (h *handler) UnFollow(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 

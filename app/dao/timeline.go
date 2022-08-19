@@ -21,12 +21,12 @@ func NewTimeline(db *sqlx.DB) repository.Timeline {
 	return &timeline{db: db}
 }
 
-func (r *timeline) FindPublicTimelines(ctx context.Context, max_id int64, since_id int64, limit int64) ([]*object.Status, error) {
+func (r *timeline) FindPublicTimelines(ctx context.Context, maxID int64, sinceID int64, limit int64) ([]*object.Status, error) {
 	var entity []*object.Status
 	//var accounts []*object.Account
 	//var result *sqlx.Rows
 	//max_id && since_id が空白の時、最新のLimit件まで取得
-	if max_id == 0 && since_id == 0 {
+	if maxID == 0 && sinceID == 0 {
 		result, err := r.db.QueryxContext(ctx, `SELECT status.id, status.account_id, status.content,
 		 status.create_at, account.id "account.id", account.username "account.username",
 		 account.create_at "account.create_at" FROM status LEFT JOIN account ON status.account_id = account.id  LIMIT ?`, limit)
@@ -56,11 +56,11 @@ func (r *timeline) FindPublicTimelines(ctx context.Context, max_id int64, since_
 		return entity, err
 	}
 	// since_id <= x <= max_id
-	if max_id != 0 && since_id != 0 {
+	if maxID != 0 && sinceID != 0 {
 		result, err := r.db.QueryxContext(ctx, `SELECT status.id, status.account_id, status.content,
 		 status.create_at, account.id "account.id", account.username "account.username",
 		 account.create_at "account.create_at" FROM status LEFT JOIN account ON status.account_id = account.id 
-		 WHERE status.id BETWEEN ? AND ? LIMIT ?`, since_id, max_id, limit)
+		 WHERE status.id BETWEEN ? AND ? LIMIT ?`, sinceID, maxID, limit)
 		if err != nil {
 			return nil, fmt.Errorf("%w", err)
 		}
@@ -79,15 +79,15 @@ func (r *timeline) FindPublicTimelines(ctx context.Context, max_id int64, since_
 	return entity, nil
 }
 
-func (r *timeline) FindHomeTimelines(ctx context.Context, uid int64, max_id int64, since_id int64, limit int64) ([]*object.Status, error) {
+func (r *timeline) FindHomeTimelines(ctx context.Context, uID int64, maxID int64, sinceID int64, limit int64) ([]*object.Status, error) {
 	var entity []*object.Status
 
-	if max_id == 0 && since_id == 0 {
+	if maxID == 0 && sinceID == 0 {
 		result, err := r.db.QueryxContext(ctx, `SELECT DISTINCT status.id, status.account_id, status.content,
 		status.create_at, account.id "account.id", account.username "account.username",
 		account.create_at "account.create_at" FROM status 
 		LEFT JOIN account ON status.account_id = account.id 
-		INNER JOIN relation ON  status.account_id IN(SELECT followee_id FROM relation WHERE follower_id = ?) LIMIT ?`, uid, limit)
+		INNER JOIN relation ON  status.account_id IN(SELECT followee_id FROM relation WHERE follower_id = ?) LIMIT ?`, uID, limit)
 		if err != nil {
 			return nil, fmt.Errorf("%w", err)
 		}
@@ -102,13 +102,13 @@ func (r *timeline) FindHomeTimelines(ctx context.Context, uid int64, max_id int6
 		return entity, err
 	}
 
-	if max_id != 0 && since_id != 0 {
+	if maxID != 0 && sinceID != 0 {
 		result, err := r.db.QueryxContext(ctx, `SELECT DISTINCT status.id, status.account_id, status.content,
 		status.create_at, account.id "account.id", account.username "account.username",
 		account.create_at "account.create_at" FROM status 
 		LEFT JOIN account ON status.account_id = account.id 
 		INNER JOIN relation ON  status.account_id IN(SELECT followee_id FROM relation WHERE follower_id = ?)
-		WHERE status.id BETWEEN ? AND ? LIMIT ?`, uid, since_id, max_id, limit)
+		WHERE status.id BETWEEN ? AND ? LIMIT ?`, uID, sinceID, maxID, limit)
 		if err != nil {
 			return nil, fmt.Errorf("%w", err)
 		}

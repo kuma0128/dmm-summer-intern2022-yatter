@@ -16,41 +16,41 @@ import (
 func (h *handler) Gettimeline(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	max_id := r.FormValue("max_id")
-	if max_id == "" {
-		max_id = "0"
+	_maxID := r.FormValue("_maxID")
+	if _maxID == "" {
+		_maxID = "0"
 	}
-	if strings.Contains(max_id, "-") {
+	if strings.Contains(_maxID, "-") {
 		httperror.BadRequest(w, errors.Errorf("negative ID doesn't existe"))
 		return
 	}
-	Max_id, err := strconv.ParseInt(max_id, 10, 64)
-	if Max_id == 0 {
-		Max_id = math.MaxInt64
+	maxID, err := strconv.ParseInt(_maxID, 10, 64)
+	if maxID == 0 {
+		maxID = math.MaxInt64
 	}
-	//fmt.Printf("%d\n", Max_id)
+	//fmt.Printf("%d\n", _maxID)
 	if err != nil {
 		httperror.BadRequest(w, err)
 		return
 	}
 
-	since_id := r.FormValue("since_id")
-	if since_id == "" {
-		since_id = "1"
+	_sinceID := r.FormValue("_sinceID")
+	if _sinceID == "" {
+		_sinceID = "1"
 	}
-	if strings.Contains(since_id, "-") {
+	if strings.Contains(_sinceID, "-") {
 		httperror.BadRequest(w, errors.Errorf("negative ID doesn't existe"))
 		return
 	}
-	Since_id, err := strconv.ParseInt(since_id, 10, 64)
+	sinceID, err := strconv.ParseInt(_sinceID, 10, 64)
 	if err != nil {
 		httperror.BadRequest(w, err)
 		return
 	}
 
-	//max_id < since_id はエラー
-	if Max_id < Since_id {
-		httperror.BadRequest(w, errors.Errorf("Need that max_id is bigger than since_id"))
+	//_maxID < _sinceID はエラー
+	if maxID < sinceID {
+		httperror.BadRequest(w, errors.Errorf("Need that _maxID is bigger than _sinceID"))
 		return
 	}
 
@@ -71,7 +71,7 @@ func (h *handler) Gettimeline(w http.ResponseWriter, r *http.Request) {
 	var statuses []*object.Status
 
 	timelineRepo := h.app.Dao.Timeline()
-	statuses, err = timelineRepo.FindPublicTimelines(ctx, Max_id, Since_id, Limit)
+	statuses, err = timelineRepo.FindPublicTimelines(ctx, maxID, sinceID, Limit)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}

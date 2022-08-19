@@ -13,8 +13,8 @@ import (
 func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	sid := chi.URLParam(r, "id")
-	Sid, err := strconv.ParseInt(sid, 10, 64)
+	sID := chi.URLParam(r, "id")
+	SID, err := strconv.ParseInt(sID, 10, 64)
 	if err != nil {
 		httperror.BadRequest(w, err)
 		return
@@ -23,7 +23,7 @@ func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 	accountAuth := auth.AccountOf(r)
 
 	statusRepo := h.app.Dao.Status()
-	err = statusRepo.DeleteStatus(ctx, Sid, accountAuth)
+	err = statusRepo.DeleteStatus(ctx, SID, accountAuth)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}

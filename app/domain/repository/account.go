@@ -17,11 +17,11 @@ type Account interface {
 	// get account
 	FindByID(ctx context.Context, uID int64) (*object.Account, error)
 
-	FollowAccount(ctx context.Context, uID int64, followedid int64) error
+	FollowAccount(ctx context.Context, uID int64, followedID int64) error
 
-	UnFollowAccount(ctx context.Context, uID int64, deleteid int64) error
+	UnFollowAccount(ctx context.Context, uID int64, deleteID int64) error
 
-	FindRelationByID(ctx context.Context, uID int64, followedid int64) (bool, error)
+	FindRelationByID(ctx context.Context, uID int64, followedID int64) (bool, error)
 
 	FindFollowingByID(ctx context.Context, uID int64, limit int64) ([]*object.Account, error)
 

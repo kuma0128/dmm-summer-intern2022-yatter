@@ -14,9 +14,9 @@ import (
 func (h *handler) GetStatus(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	sID := chi.URLParam(r, "id")
-
-	Sid, err := strconv.ParseInt(sID, 10, 64)
+	_sID := chi.URLParam(r, "id")
+	var sID int64
+	sID, err := strconv.ParseInt(_sID, 10, 64)
 	//status.S_id = S_id
 	if err != nil {
 		httperror.BadRequest(w, err)
@@ -26,7 +26,7 @@ func (h *handler) GetStatus(w http.ResponseWriter, r *http.Request) {
 	statusRepo := h.app.Dao.Status()
 	accountRepo := h.app.Dao.Account()
 	var status_info *object.Status
-	status_info, err = statusRepo.FindByID(ctx, Sid)
+	status_info, err = statusRepo.FindByID(ctx, sID)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}
