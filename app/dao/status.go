@@ -24,8 +24,8 @@ func NewStatus(db *sqlx.DB) repository.Status {
 }
 
 // CreateStatus : statusを作成
-func (r *status) AddStatus(ctx context.Context, status *object.Status, uid int64) (*object.Status, error) {
-	result, err := r.db.ExecContext(ctx, "INSERT INTO status (account_id, content) VALUES (?, ?)", uid, status.Content)
+func (r *status) AddStatus(ctx context.Context, status *object.Status, uID int64) (*object.Status, error) {
+	result, err := r.db.ExecContext(ctx, "INSERT INTO status (account_id, content) VALUES (?, ?)", uID, status.Content)
 	if err != nil {
 		return status, fmt.Errorf("%w", err)
 	}
@@ -38,8 +38,8 @@ func (r *status) AddStatus(ctx context.Context, status *object.Status, uid int64
 }
 
 // delete status
-func (r *status) DeleteStatus(ctx context.Context, sid int64, accout *object.Account) error {
-	result, err := r.db.ExecContext(ctx, "SELECT id FROM status WHERE id = ?", sid)
+func (r *status) DeleteStatus(ctx context.Context, sID int64, accout *object.Account) error {
+	result, err := r.db.ExecContext(ctx, "SELECT id FROM status WHERE id = ?", sID)
 	if err != nil {
 		return fmt.Errorf("%w", err)
 	}
@@ -48,17 +48,17 @@ func (r *status) DeleteStatus(ctx context.Context, sid int64, accout *object.Acc
 	if cnt == 0 {
 		return fmt.Errorf("negative ID doesn't existe")
 	}
-	_, err = r.db.ExecContext(ctx, "DELETE FROM status WHERE id = ?", sid)
+	_, err = r.db.ExecContext(ctx, "DELETE FROM status WHERE id = ?", sID)
 	if err != nil {
 		return fmt.Errorf("%w", err)
 	}
 	return nil
 }
 
-//get status : statusを取得
-func (r *status) FindStatusByID(ctx context.Context, sid int64) (*object.Status, error) {
+// get status : statusを取得
+func (r *status) FindByID(ctx context.Context, sID int64) (*object.Status, error) {
 	entity := new(object.Status)
-	err := r.db.QueryRowxContext(ctx, "SELECT id, account_id, content, create_at FROM status WHERE id = ?", sid).StructScan(entity)
+	err := r.db.QueryRowxContext(ctx, "SELECT id, account_id, content, create_at FROM status WHERE id = ?", sID).StructScan(entity)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

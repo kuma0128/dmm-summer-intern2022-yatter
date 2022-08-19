@@ -11,13 +11,12 @@ import (
 )
 
 // Handle request for `GET /v1/statuses/{id}`
-func (h *handler) Getstatus(w http.ResponseWriter, r *http.Request) {
+func (h *handler) GetStatus(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	sid := chi.URLParam(r, "id")
+	sID := chi.URLParam(r, "id")
 
-	//status := new(object.Status)
-	Sid, err := strconv.ParseInt(sid, 10, 64)
+	Sid, err := strconv.ParseInt(sID, 10, 64)
 	//status.S_id = S_id
 	if err != nil {
 		httperror.BadRequest(w, err)
@@ -25,14 +24,15 @@ func (h *handler) Getstatus(w http.ResponseWriter, r *http.Request) {
 	}
 
 	statusRepo := h.app.Dao.Status()
+	accountRepo := h.app.Dao.Account()
 	var status_info *object.Status
-	status_info, err = statusRepo.FindStatusByID(ctx, Sid)
+	status_info, err = statusRepo.FindByID(ctx, Sid)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}
 	var account_info *object.Account
-	uid := status_info.AccountID
-	account_info, err = statusRepo.FindAccountByID(ctx, uid)
+	uID := status_info.AccountID
+	account_info, err = accountRepo.FindByID(ctx, uID)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}

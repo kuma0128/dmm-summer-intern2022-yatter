@@ -22,7 +22,7 @@ func NewRouter(app *app.App) http.Handler {
 	//r.With(middleware.Logger).Post("/", h.Create)
 	r.With(auth.Middleware(app)).Post("/", h.Create)
 	r.With(auth.Middleware(app)).Delete("/{id}", h.Delete)
-	r.Get("/{id}", h.Getstatus)
+	r.Get("/{id}", h.GetStatus)
 
 	return r
 }

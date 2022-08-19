@@ -47,10 +47,10 @@ func (r *account) FindByUsername(ctx context.Context, username string) (*object.
 	return entity, nil
 }
 
-//get account : s_idからaccountを取得
-func (r *status) FindAccountByID(ctx context.Context, uid int64) (*object.Account, error) {
+// get account : s_idからaccountを取得
+func (r *account) FindByID(ctx context.Context, uID int64) (*object.Account, error) {
 	entity := new(object.Account)
-	err := r.db.QueryRowxContext(ctx, "SELECT id, username, password_hash, display_name, avatar, header, note, create_at FROM account WHERE id = ?", uid).StructScan(entity)
+	err := r.db.QueryRowxContext(ctx, "SELECT id, username, password_hash, display_name, avatar, header, note, create_at FROM account WHERE id = ?", uID).StructScan(entity)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -61,7 +61,7 @@ func (r *status) FindAccountByID(ctx context.Context, uid int64) (*object.Accoun
 	return entity, nil
 }
 
-//follow user
+// follow user
 func (r *account) FollowAccount(ctx context.Context, uid int64, followedid int64) error {
 	_, err := r.db.ExecContext(ctx, "INSERT INTO relation (follower_id, followee_id) VALUES (?, ?)", uid, followedid)
 	if err != nil {
@@ -70,7 +70,7 @@ func (r *account) FollowAccount(ctx context.Context, uid int64, followedid int64
 	return err
 }
 
-//unfollow user
+// unfollow user
 func (r *account) UnFollowAccount(ctx context.Context, uid int64, deleteid int64) error {
 	var err error
 	_, err = r.db.ExecContext(ctx, "DELETE FROM relation WHERE follower_id = ? AND followee_id = ?", uid, deleteid)
@@ -80,7 +80,7 @@ func (r *account) UnFollowAccount(ctx context.Context, uid int64, deleteid int64
 	return nil
 }
 
-//get relation
+// get relation
 func (r *account) FindRelationByID(ctx context.Context, uid int64, followedid int64) (bool, error) {
 	result, err := r.db.QueryxContext(ctx, "SELECT follower_id FROM relation WHERE follower_id = ? AND followee_id = ?", uid, followedid)
 	if err != nil {
@@ -96,7 +96,7 @@ func (r *account) FindRelationByID(ctx context.Context, uid int64, followedid in
 	return following, err
 }
 
-//get following
+// get following
 func (r *account) FindFollowingByID(ctx context.Context, uid int64, limit int64) ([]*object.Account, error) {
 	var entity []*object.Account
 

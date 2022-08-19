@@ -11,7 +11,5 @@ type Status interface {
 	// delete status
 	DeleteStatus(ctx context.Context, sid int64, accout *object.Account) error
 	// get status
-	FindStatusByID(ctx context.Context, sid int64) (*object.Status, error)
-	// get account
-	FindAccountByID(ctx context.Context, uid int64) (*object.Account, error)
+	FindByID(ctx context.Context, sid int64) (*object.Status, error)
 }

@@ -14,13 +14,16 @@ type Account interface {
 	// Create user
 	AddAccount(ctx context.Context, account *object.Account) error
 
-	FollowAccount(ctx context.Context, uid int64, followedid int64) error
+	// get account
+	FindByID(ctx context.Context, uID int64) (*object.Account, error)
 
-	UnFollowAccount(ctx context.Context, uid int64, deleteid int64) error
+	FollowAccount(ctx context.Context, uID int64, followedid int64) error
 
-	FindRelationByID(ctx context.Context, uid int64, followedid int64) (bool, error)
+	UnFollowAccount(ctx context.Context, uID int64, deleteid int64) error
 
-	FindFollowingByID(ctx context.Context, uid int64, limit int64) ([]*object.Account, error)
+	FindRelationByID(ctx context.Context, uID int64, followedid int64) (bool, error)
 
-	FindFollowerByID(ctx context.Context, uid int64, max_id int64, since_id int64, limit int64) ([]*object.Account, error)
+	FindFollowingByID(ctx context.Context, uID int64, limit int64) ([]*object.Account, error)
+
+	FindFollowerByID(ctx context.Context, uID int64, maxID int64, sinceID int64, limit int64) ([]*object.Account, error)
 }

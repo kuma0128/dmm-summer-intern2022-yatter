@@ -38,7 +38,7 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//get create_at time
-	tmpstatus, err := statusRepo.FindStatusByID(ctx, newstatus.Sid)
+	tmpstatus, err := statusRepo.FindByID(ctx, newstatus.Sid)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}
