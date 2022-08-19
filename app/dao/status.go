@@ -48,8 +48,7 @@ func (r *status) DeleteStatus(ctx context.Context, sID int64, accout *object.Acc
 	if cnt == 0 {
 		return fmt.Errorf("negative ID doesn't existe")
 	}
-	_, err = r.db.ExecContext(ctx, "DELETE FROM status WHERE id = ?", sID)
-	if err != nil {
+	if _, err = r.db.ExecContext(ctx, "DELETE FROM status WHERE id = ?", sID); err != nil {
 		return fmt.Errorf("%w", err)
 	}
 	return nil
@@ -58,9 +57,7 @@ func (r *status) DeleteStatus(ctx context.Context, sID int64, accout *object.Acc
 // get status : statusを取得
 func (r *status) FindByID(ctx context.Context, sID int64) (*object.Status, error) {
 	entity := new(object.Status)
-	err := r.db.QueryRowxContext(ctx, "SELECT id, account_id, content, create_at FROM status WHERE id = ?", sID).StructScan(entity)
-
-	if err != nil {
+	if err := r.db.QueryRowxContext(ctx, "SELECT id, account_id, content, create_at FROM status WHERE id = ?", sID).StructScan(entity); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}

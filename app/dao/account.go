@@ -50,8 +50,7 @@ func (r *account) FindByUsername(ctx context.Context, username string) (*object.
 // get account : s_idからaccountを取得
 func (r *account) FindByID(ctx context.Context, uID int64) (*object.Account, error) {
 	entity := new(object.Account)
-	err := r.db.QueryRowxContext(ctx, "SELECT id, username, password_hash, display_name, avatar, header, note, create_at FROM account WHERE id = ?", uID).StructScan(entity)
-	if err != nil {
+	if err := r.db.QueryRowxContext(ctx, "SELECT id, username, password_hash, display_name, avatar, header, note, create_at FROM account WHERE id = ?", uID).StructScan(entity); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
@@ -63,18 +62,16 @@ func (r *account) FindByID(ctx context.Context, uID int64) (*object.Account, err
 
 // follow user
 func (r *account) FollowAccount(ctx context.Context, uID int64, followedID int64) error {
-	_, err := r.db.ExecContext(ctx, "INSERT INTO relation (follower_id, followee_id) VALUES (?, ?)", uID, followedID)
-	if err != nil {
+	if _, err := r.db.ExecContext(ctx, "INSERT INTO relation (follower_id, followee_id) VALUES (?, ?)", uID, followedID); err != nil {
 		return fmt.Errorf("%w", err)
 	}
-	return err
+	return nil
 }
 
 // unfollow user
 func (r *account) UnFollowAccount(ctx context.Context, uid int64, deleteid int64) error {
 	var err error
-	_, err = r.db.ExecContext(ctx, "DELETE FROM relation WHERE follower_id = ? AND followee_id = ?", uid, deleteid)
-	if err != nil {
+	if _, err = r.db.ExecContext(ctx, "DELETE FROM relation WHERE follower_id = ? AND followee_id = ?", uid, deleteid); err != nil {
 		return fmt.Errorf("%w", err)
 	}
 	return nil
