@@ -20,7 +20,7 @@ func NewRouter(app *app.App) http.Handler {
 
 	h := &handler{app: app}
 	r.Post("/", h.Create)
-	r.Get("/{username}", h.Getuser)
+	r.Get("/{username}", h.GetUser)
 
 	r.With(auth.Middleware(app)).Post("/{username}/follow", h.Follow)
 	r.With(auth.Middleware(app)).Post("/{username}/unfollow", h.Unfollow)
