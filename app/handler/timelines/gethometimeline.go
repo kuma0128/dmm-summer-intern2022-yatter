@@ -70,10 +70,10 @@ func (h *handler) GetHometimeline(w http.ResponseWriter, r *http.Request) {
 
 	var statuses []*object.Status
 
-	Account_auth := auth.AccountOf(r)
+	accountAuth := auth.AccountOf(r)
 
 	timelineRepo := h.app.Dao.Timeline()
-	statuses, err = timelineRepo.FindHomeTimelines(ctx, Account_auth.ID, Max_id, Since_id, Limit)
+	statuses, err = timelineRepo.FindHomeTimelines(ctx, accountAuth.ID, Max_id, Since_id, Limit)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}

@@ -20,10 +20,10 @@ func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Account_auth := auth.AccountOf(r)
+	accountAuth := auth.AccountOf(r)
 
 	statusRepo := h.app.Dao.Status()
-	err = statusRepo.DeleteStatus(ctx, Sid, Account_auth)
+	err = statusRepo.DeleteStatus(ctx, Sid, accountAuth)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}

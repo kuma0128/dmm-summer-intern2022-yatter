@@ -24,23 +24,23 @@ func (h *handler) Unfollow(w http.ResponseWriter, r *http.Request) {
 		httperror.InternalServerError(w, err)
 	}
 
-	Account_auth := auth.AccountOf(r)
+	accountAuth := auth.AccountOf(r)
 
 	relation := new(object.Relationship)
 	var flag bool
 	//check whether following now
-	flag, err = accountRepo.FindRelationByID(ctx, Account_auth.ID, _account.ID)
+	flag, err = accountRepo.FindRelationByID(ctx, accountAuth.ID, _account.ID)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}
 
 	if flag {
-		err = accountRepo.UnFollowAccount(ctx, Account_auth.ID, _account.ID)
+		err = accountRepo.UnFollowAccount(ctx, accountAuth.ID, _account.ID)
 		if err != nil {
 			httperror.InternalServerError(w, err)
 		}
 
-		relation.ID = Account_auth.ID
+		relation.ID = accountAuth.ID
 		relation.Following = flag
 		relation.Followed_by = false // This func is UnFollow
 
@@ -50,7 +50,7 @@ func (h *handler) Unfollow(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		relation.ID = Account_auth.ID
+		relation.ID = accountAuth.ID
 		relation.Following = flag
 		relation.Followed_by = false // This func is UnFollow
 

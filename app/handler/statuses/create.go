@@ -22,17 +22,17 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//autholize
-	Account_auth := auth.AccountOf(r)
+	accountAuth := auth.AccountOf(r)
 
 	statusRepo := h.app.Dao.Status()
 
-	status, err := object.CreateStatusobject(req.Status, Account_auth)
+	status, err := object.CreateStatusobject(req.Status, accountAuth)
 	if err != nil {
 		httperror.BadRequest(w, err)
 		return
 	}
 
-	newstatus, err := statusRepo.AddStatus(ctx, status, Account_auth.ID)
+	newstatus, err := statusRepo.AddStatus(ctx, status, accountAuth.ID)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 	}
