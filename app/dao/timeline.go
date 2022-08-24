@@ -40,9 +40,7 @@ func (r *timeline) FindPublicTimelines(ctx context.Context, maxID int64, sinceID
 		//result2.StructScan(accounts)
 		for result.Next() {
 			var tmp object.Status
-			err = result.StructScan(&tmp)
-			//fmt.Printf("%v\n", tmp)
-			if err != nil {
+			if err = result.StructScan(&tmp); err != nil {
 				return nil, fmt.Errorf("%w", err)
 			}
 			entity = append(entity, &tmp)
@@ -53,7 +51,7 @@ func (r *timeline) FindPublicTimelines(ctx context.Context, maxID int64, sinceID
 		// for i, _ := range entity {
 		// 	account_ids[i] = entity[i].AccountID
 		// }
-		return entity, err
+		return entity, nil
 	}
 	// since_id <= x <= max_id
 	if maxID != 0 && sinceID != 0 {
@@ -67,13 +65,12 @@ func (r *timeline) FindPublicTimelines(ctx context.Context, maxID int64, sinceID
 
 		for result.Next() {
 			var tmp object.Status
-			err = result.StructScan(&tmp)
-			if err != nil {
+			if err = result.StructScan(&tmp); err != nil {
 				return nil, fmt.Errorf("%w", err)
 			}
 			entity = append(entity, &tmp)
 		}
-		return entity, err
+		return entity, nil
 	}
 
 	return entity, nil
@@ -93,13 +90,12 @@ func (r *timeline) FindHomeTimelines(ctx context.Context, uID int64, maxID int64
 		}
 		for result.Next() {
 			var tmp object.Status
-			err = result.StructScan(&tmp)
-			if err != nil {
+			if err = result.StructScan(&tmp); err != nil {
 				return nil, fmt.Errorf("%w", err)
 			}
 			entity = append(entity, &tmp)
 		}
-		return entity, err
+		return entity, nil
 	}
 
 	if maxID != 0 && sinceID != 0 {
@@ -115,13 +111,12 @@ func (r *timeline) FindHomeTimelines(ctx context.Context, uID int64, maxID int64
 
 		for result.Next() {
 			var tmp object.Status
-			err = result.StructScan(&tmp)
-			if err != nil {
+			if err = result.StructScan(&tmp); err != nil {
 				return nil, fmt.Errorf("%w", err)
 			}
 			entity = append(entity, &tmp)
 		}
-		return entity, err
+		return entity, nil
 	}
 
 	return entity, nil

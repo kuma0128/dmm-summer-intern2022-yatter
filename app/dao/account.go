@@ -25,22 +25,19 @@ func NewAccount(db *sqlx.DB) repository.Account {
 
 func (r *account) AddAccount(ctx context.Context, account *object.Account) error {
 	//entity := new(object.Account)
-	_, err := r.db.ExecContext(ctx, "INSERT INTO account (username, password_hash) VALUES (?, ?)", account.Username, account.PasswordHash)
-	if err != nil {
+	if _, err := r.db.ExecContext(ctx, "INSERT INTO account (username, password_hash) VALUES (?, ?)", account.Username, account.PasswordHash); err != nil {
 		return fmt.Errorf("%w", err)
 	}
-	return err
+	return nil
 }
 
 // FindByUsername : ユーザ名からユーザを取得
 func (r *account) FindByUsername(ctx context.Context, username string) (*object.Account, error) {
 	entity := new(object.Account)
-	err := r.db.QueryRowxContext(ctx, "select * from account where username = ?", username).StructScan(entity)
-	if err != nil {
+	if err := r.db.QueryRowxContext(ctx, "select * from account where username = ?", username).StructScan(entity); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
-
 		return nil, fmt.Errorf("%w", err)
 	}
 
@@ -69,17 +66,16 @@ func (r *account) FollowAccount(ctx context.Context, uID int64, followedID int64
 }
 
 // unfollow user
-func (r *account) UnFollowAccount(ctx context.Context, uid int64, deleteid int64) error {
-	var err error
-	if _, err = r.db.ExecContext(ctx, "DELETE FROM relation WHERE follower_id = ? AND followee_id = ?", uid, deleteid); err != nil {
+func (r *account) UnFollowAccount(ctx context.Context, uID int64, deleteID int64) error {
+	if _, err := r.db.ExecContext(ctx, "DELETE FROM relation WHERE follower_id = ? AND followee_id = ?", uID, deleteID); err != nil {
 		return fmt.Errorf("%w", err)
 	}
 	return nil
 }
 
 // get relation
-func (r *account) FindRelationByID(ctx context.Context, uid int64, followedid int64) (bool, error) {
-	result, err := r.db.QueryxContext(ctx, "SELECT follower_id FROM relation WHERE follower_id = ? AND followee_id = ?", uid, followedid)
+func (r *account) FindRelationByID(ctx context.Context, uID int64, followedID int64) (bool, error) {
+	result, err := r.db.QueryxContext(ctx, "SELECT follower_id FROM relation WHERE follower_id = ? AND followee_id = ?", uID, followedID)
 	if err != nil {
 		return false, fmt.Errorf("%w", err)
 	}
@@ -90,30 +86,29 @@ func (r *account) FindRelationByID(ctx context.Context, uid int64, followedid in
 	} else {
 		following = true
 	}
-	return following, err
+	return following, nil
 }
 
 // get following
-func (r *account) FindFollowingByID(ctx context.Context, uid int64, limit int64) ([]*object.Account, error) {
+func (r *account) FindFollowingByID(ctx context.Context, uID int64, limit int64) ([]*object.Account, error) {
 	var entity []*object.Account
 
 	result, err := r.db.QueryxContext(ctx, `SELECT DISTINCT account.id, account.username,
 	account.create_at FROM relation LEFT JOIN account ON relation.follower_id = account.id AND relation.follower_id = ? LIMIT ?`,
-		uid, limit)
+		uID, limit)
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
 	}
 
 	for result.Next() {
 		var tmp object.Account
-		err = result.StructScan(&tmp)
-		if err != nil {
+		if err = result.StructScan(&tmp); err != nil {
 			return nil, fmt.Errorf("%w", err)
 		}
 		entity = append(entity, &tmp)
 	}
 
-	return entity, err
+	return entity, nil
 }
 
 func (r *account) FindFollowerByID(ctx context.Context, uid int64, max_id int64, since_id int64, limit int64) ([]*object.Account, error) {
@@ -128,13 +123,12 @@ func (r *account) FindFollowerByID(ctx context.Context, uid int64, max_id int64,
 
 		for result.Next() {
 			var tmp object.Account
-			err = result.StructScan(&tmp)
-			if err != nil {
+			if err = result.StructScan(&tmp); err != nil {
 				return nil, fmt.Errorf("%w", err)
 			}
 			entity = append(entity, &tmp)
 		}
-		return entity, err
+		return entity, nil
 	}
 
 	if max_id != 0 && since_id != 0 {
@@ -147,13 +141,12 @@ func (r *account) FindFollowerByID(ctx context.Context, uid int64, max_id int64,
 
 		for result.Next() {
 			var tmp object.Account
-			err = result.StructScan(&tmp)
-			if err != nil {
+			if err = result.StructScan(&tmp); err != nil {
 				return nil, fmt.Errorf("%w", err)
 			}
 			entity = append(entity, &tmp)
 		}
-		return entity, err
+		return entity, nil
 	}
 	return entity, nil
 }
